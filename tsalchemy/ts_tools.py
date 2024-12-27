@@ -162,7 +162,7 @@ def remove_outliers(ts, method='iqr', factor=1.5):
 
 def check_seasonality(ts, freq=None):
     """
-    判断时间���列是否存在季节性。
+    判断时间序列是否存在季节性。
 
     参数:
     ts (pd.Series): 时间序列数据。
@@ -190,6 +190,8 @@ def check_seasonality(ts, freq=None):
         return False
 
 def get_stl_components(ts, freq=None, components='trend'):
+    if len(ts) != len(ts.dropna()):
+        raise ValueError("时间序列中存在NaN值，无法进行STL分解。")
     if freq is None:
         freq = infer_frequency(ts.index)
     if freq is None:
@@ -238,7 +240,7 @@ def bry_boschan(data, window=13):
     # 平滑数据
     smoothed_data = data.rolling(window=window, center=True).mean()
     
-    # 初步识别��值
+    # 初步识别峰值和谷值
     peaks = (smoothed_data.shift(1) < smoothed_data) & (smoothed_data.shift(-1) < smoothed_data)
     troughs = (smoothed_data.shift(1) > smoothed_data) & (smoothed_data.shift(-1) > smoothed_data)
     
